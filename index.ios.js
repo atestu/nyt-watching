@@ -24,51 +24,51 @@ class NYTFeed extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (row1, row2) => row1 !== row2,
-      }),
-      loaded: false,
+			dataSource: new ListView.DataSource({
+				rowHasChanged: (row1, row2) => row1 !== row2,
+			}),
+			loaded: false,
 		}
 	}
 
 	componentDidMount() {
-    this.fetchData();
-  }
+		this.fetchData();
+	}
 
 	fetchData() {
-    fetch(REQUEST_URL)
-      .then(response => response.json())
-      .then(data => {
-        this.setState({
+		fetch(REQUEST_URL)
+			.then(response => response.json())
+			.then(data => {
+				this.setState({
 					dataSource: this.state.dataSource.cloneWithRows(data.streams[0].clusters),
-          loaded: true
-        });
-      })
-      .done();
-  }
+					loaded: true
+				});
+			})
+			.done();
+	}
 
 	render() {
-    if (!this.state.loaded) {
-      return this.renderLoadingView();
-    }
+		if (!this.state.loaded) {
+			return this.renderLoadingView();
+		}
 
 		return <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderStory.bind(this)}
-        style={styles.listView}
+				dataSource={this.state.dataSource}
+				renderRow={this.renderStory.bind(this)}
+				style={styles.listView}
 				initialListSize={this.state.dataSource.rowIdentities[0].length}
-      />
-  }
+			/>
+	}
 
-  renderLoadingView() {
-    return (
-      <View style={[styles.container, styles.containerColumn]}>
-        <Text style={{paddingTop: 200, alignSelf: 'center'}}>
-          Loading stories...
-        </Text>
-      </View>
-    );
-  }
+	renderLoadingView() {
+		return (
+			<View style={[styles.container, styles.containerColumn]}>
+				<Text style={{paddingTop: 200, alignSelf: 'center'}}>
+					Loading stories...
+				</Text>
+			</View>
+		);
+	}
 
 	getText(summary) {
 		var boldTexts = summary.match(/<b>([^<]*)<\/b>/ig);
@@ -91,7 +91,7 @@ class NYTFeed extends Component {
 		return texts
 	}
 
-  renderStory(story) {
+	renderStory(story) {
 		var thumbnailStyle = story.posts[0].display_asset_style;
 		var image = <View></View>;
 		var viewStyles = [styles.container];
@@ -125,14 +125,14 @@ class NYTFeed extends Component {
 			<Text style={{color: '#999'}}>{moment(story.posts[0].date_updated*1000).fromNow()}</Text>
 		</View>
 
-    return (
+		return (
 			<TouchableHighlight activeOpacity={0.5} underlayColor={'white'} onPress={() => Linking.openURL(story.posts[0].asset.url)}>
-	      <View style={viewStyles}>
+				<View style={viewStyles}>
 					{thumbnailStyle === 'thumbLarge' ? [textView, image] : [image, textView]}
-	      </View>
+				</View>
 			</TouchableHighlight>
-    );
-  }
+		);
+	}
 }
 
 const styles = StyleSheet.create({
@@ -147,9 +147,9 @@ const styles = StyleSheet.create({
 	containerColumn: {
 		flexDirection: 'column',
 	},
-  listView: {
-    paddingTop: 20,
-  }
+	listView: {
+		paddingTop: 20,
+	}
 });
 
 AppRegistry.registerComponent('NYTFeed', () => NYTFeed);
